@@ -37,15 +37,19 @@ public class WebSecurityConfig  {
 //                .httpBasic(withDefaults())
 //                .build();
 //    }
-    @Bean
-    @Order(2)
+   @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/api/v*/registration/**").permitAll();
-                    auth.requestMatchers("/error").permitAll();
-                    auth.anyRequest().authenticated();
-        })
-            .formLogin(withDefaults());
+        http
+                .csrf().disable()
+                .cors(Customizer.withDefaults())
+                .authorizeHttpRequests()
+                .requestMatchers(HttpMethod.POST,
+                        "/api/v*/registration/**"
+                )
+                .permitAll()
+                .anyRequest()
+                .authenticated().and()
+                .formLogin();
         return http.build();
     }
 
